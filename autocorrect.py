@@ -29,7 +29,20 @@ probs = {}
 for k in word_freq_cnt.keys():
     probs[k] = word_freq_cnt[k]/total_words
 
-def my_autocorrect(input_word):
+def my_autocorrect(input_word: str) -> pd.core.frame.DataFrame:
+    """
+    Print that the word is correct or return a dataframe with closest matches.
+
+    Uses Jaccard distance to compare words and finds the most similar words to the input.
+
+    Args:
+        input_word: The word we want to correct.
+
+    Returns:
+        Either a string "Your word seems to be correct." or a dataframe with the closest
+        matches, their relative frequency in the main corpus and the similarity to the
+        input_word.
+    """
     input_word = input_word.lower()
 
     if input_word in V:
