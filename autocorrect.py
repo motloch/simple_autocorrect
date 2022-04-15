@@ -20,3 +20,7 @@ word_freq_cnt = Counter(words)
 print('Most common words:')
 for w, c in word_freq_cnt.most_common()[:5]:
     print(f'{w:6} {c:>5}')
+
+total_words = sum(word_freq_cnt.values())
+
+print(total_words)
