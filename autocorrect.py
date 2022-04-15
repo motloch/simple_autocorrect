@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-import textdistance
+from textdistance import Jaccard
 import re
 from collections import Counter
 
@@ -16,6 +16,7 @@ V = set(words)
 
 print(f'Moby Dick includes {len(V)} unique words')
 
+# Count frequency of each word
 word_freq_cnt = Counter(words)
 print('Most common words:')
 for w, c in word_freq_cnt.most_common()[:5]:
@@ -23,4 +24,32 @@ for w, c in word_freq_cnt.most_common()[:5]:
 
 total_words = sum(word_freq_cnt.values())
 
-print(total_words)
+# Relative word frequency of each word
+probs = {}
+for k in word_freq_cnt.keys():
+    probs[k] = word_freq_cnt[k]/total_words
+
+def my_autocorrect(input_word):
+    input_word = input_word.lower()
+
+    if input_word in V:
+        return('Your word seems to be correct.')
+    else:
+        similarities = [1 - Jaccard(qval=2).distance(v, input_word) for v in word_freq_cnt.keys()]
+        df = pd.DataFrame.from_dict(probs, orient = 'index').reset_index()
+        df = df.rename(columns={'index':'Word', 0:'Prob'})
+        df['Similarity'] = similarities
+        out = df.sort_values(['Similarity', 'Prob'], ascending = False).head()
+        return(out)
+
+print('\nAutocorrect  neverteless:')
+print(my_autocorrect('neverteless'))
+
+print('\nAutocorrect nesseccary:')
+print(my_autocorrect('nesseccary'))
+
+print('\nAutocorrect occurence:')
+print(my_autocorrect('occurence'))
+
+print('\nAutocorrect white:')
+print(my_autocorrect('white'))
